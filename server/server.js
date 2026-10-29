@@ -11,8 +11,8 @@ function formatarDataParaBD(dataStr) {
     return `${ano}-${mes}-${dia}`;
   }
 }
-const app = express();
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
@@ -133,7 +133,7 @@ app.delete("/cliente/:id", async (req, res) => {
     return res.status(200).json({ msg: "Cliente deletado com sucesso" });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: "Erro no servidor" });
+    return res.status(500).json({ msg: "Erro no servidor ao deletar cliente" });
   }
 });
 //#endregion
@@ -213,6 +213,32 @@ app.get("/cadastro/:id", async (req, res) => {
     return res.status(500).json({ msg: "Erro no servidor." });
   }
 });
+
+// DELETE - Deleta o endereço cadastrado
+app.delete("/cadastro/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const sql = "DELETE FROM cadastro WHERE id_cadastro = ?"
+  try {
+    const resp = await abrirConexao.query(sql, [id])
+
+    if(resp.affectedRows === 0){
+      return res.status(404).json({msg: "Id não foi encontrado"})
+    }
+
+    return res.status(201).json({msg: "Endereço deletado com sucesso."})
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Erro no servidor ao deletar o cadastro"})
+  }
+});
+//#endregion
+
+//#region Login
+app.post("/criarLogin",  async (req, res) => {
+  const {email, senha} = req.body;
+  const sql = ""
+})
+
 //#endregion
 
 const PORT = process.env.PORT || 3000;
