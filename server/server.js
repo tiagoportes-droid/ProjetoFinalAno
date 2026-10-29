@@ -138,6 +138,7 @@ app.delete("/cliente/:id", async (req, res) => {
 });
 //#endregion
 
+//Faltando put
 //#region Cadastro Cliente (Endereço)
 
 // POST - Vincula o cliente a um endereço
@@ -217,26 +218,115 @@ app.get("/cadastro/:id", async (req, res) => {
 // DELETE - Deleta o endereço cadastrado
 app.delete("/cadastro/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const sql = "DELETE FROM cadastro WHERE id_cadastro = ?"
+  const sql = "DELETE FROM cadastro WHERE id_cadastro = ?";
   try {
-    const resp = await abrirConexao.query(sql, [id])
+    const resp = await abrirConexao.query(sql, [id]);
 
-    if(resp.affectedRows === 0){
-      return res.status(404).json({msg: "Id não foi encontrado"})
+    if (resp.affectedRows === 0) {
+      return res.status(404).json({ msg: "Id não foi encontrado" });
     }
 
-    return res.status(201).json({msg: "Endereço deletado com sucesso."})
+    return res.status(201).json({ msg: "Endereço deletado com sucesso." });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: "Erro no servidor ao deletar o cadastro"})
+    return res
+      .status(500)
+      .json({ msg: "Erro no servidor ao deletar o cadastro" });
   }
 });
 //#endregion
 
+// Preciso nem falar oq falta
 //#region Login
-app.post("/criarLogin",  async (req, res) => {
-  const {email, senha} = req.body;
-  const sql = ""
+
+// POST - Cria os emails
+app.post("/login", async (req, res) => {
+  const { id_cliente, email, senha } = req.body;
+  const sql = "INSERT INTO login (id_cliente, email, senha) VALUES (?, ?, ?)";
+
+  if (!email || !senha) {
+    return res.status(400).json({ msg: "Insira os valores corretamente" });
+  }
+  try {
+    const resp = await abrirConexao.query(sql, [id_cliente, email, senha]);
+
+    return res.status(201).json({
+      msg: "Login criado com sucesso",
+      id_login: Number(resp.insertId),
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Erro no servidor a criar login" });
+  }
+});
+
+// POST - Verfica os email e as senhas
+app.post("/login", async (req, res) => {
+  const { id_cliente, email, senha } = req.body;
+  const sql = "SELECT * FROM login WHERE email = ?";
+
+  if (!email || !senha) {
+    return res.status(400).json({ msg: "Escreva corretamente os valores" });
+  }
+  try {
+    const resp = await abrirConexao.query(sql, [email]);
+
+    if (resp.length === 0) {
+      return res.status(401).json({ msg: "Email ou senha incorretos" });
+    }
+
+    const cliente = resp[0]; // Pega a primeira opção para acessar o objeto do cliente
+
+    if (senha !== cliente.senha) {
+      return res.status(401).json({ msg: "Email ou senha incorretos" });
+    }
+    
+    delete cliente.senha; // Remove a senha antes de colocar ela no front-end
+
+    return res.status(200).json({
+      msg: "Login realizado com sucesso",
+      id_login: Number(resp.insertId),
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Erro no servidor ao confirmar login" });
+  }
+});
+
+// GET - Lista todas as senhas do clientes
+app.get("/login", async (req, res) => {
+  const sql = "SELECT * FROM login";
+  try {
+    const resp = await abrirConexao.query(sql);
+
+    return res.json(resp);
+  } catch (error) {
+    console.log(error);
+    return es
+      .status(500)
+      .json({ msg: "Erro no servidor ao verificar os logins e senahs" });
+  }
+});
+
+// GET - Filtra as senhas por id do cliente
+app.get("/login/:id", async (req, res) => {
+  const id = Number(req.params.id)
+  const sql = "SELECT * FROM login WHERE id_cliente = ?";
+  try {
+    const resp = await abrirConexao.query(sql, [id]);
+
+    return res.json(resp);
+  } catch (error) {
+    console.log(error);
+    return es
+      .status(500)
+      .json({ msg: "Erro no servidor ao verificar os logins e senahs" });
+  }
+});
+
+app.put("/login/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const sql = "UPDATE  FROM login WHERE id_cliente = ?";
 })
 
 //#endregion
