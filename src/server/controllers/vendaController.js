@@ -10,7 +10,9 @@ export async function finalizar(req, res) {
     formaPagamento.trim().length === 0 ||
     formaPagamento.trim().length > 50
   ) {
-    return res.status(400).json({ erro: "Cliente ou forma de pagamento inválidos." });
+    return res
+      .status(400)
+      .json({ erro: "Cliente ou forma de pagamento inválidos." });
   }
 
   const venda = await vendaModel.finalizarCarrinho(

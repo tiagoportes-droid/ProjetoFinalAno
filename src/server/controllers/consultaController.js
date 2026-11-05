@@ -23,7 +23,9 @@ export async function criar(req, res) {
     (tipoTelhado != null && typeof tipoTelhado !== "string") ||
     (descricao != null && typeof descricao !== "string")
   ) {
-    return res.status(400).json({ erro: "Os dados da simulação são inválidos." });
+    return res
+      .status(400)
+      .json({ erro: "Os dados da simulação são inválidos." });
   }
 
   const idConsulta = await consultaModel.criar({
