@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 import "dotenv/config";
-import abrirConexao from "./db.js";
+import abrirConexao from "./server/db.js";
 
 function formatarDataParaBD(dataStr) {
   if (!dataStr || dataStr.trim() === "") return null;
@@ -236,7 +236,6 @@ app.delete("/cadastro/:id", async (req, res) => {
 });
 //#endregion
 
-// Preciso nem falar oq falta
 //#region Login
 
 // POST - Cria os emails
