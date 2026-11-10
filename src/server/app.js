@@ -10,15 +10,11 @@ import vendaRoutes from "./routes/vendaRoutes.js";
 const app = express();
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const publicDirectory = path.resolve(currentDirectory, "../public");
-
-const allowedOrigins = process.env.CORS_ORIGIN?.split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-app.use(cors(allowedOrigins?.length ? { origin: allowedOrigins } : {}));
-app.use(express.json({ limit: "100kb" }));
-
+app.use(cors());
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+
 app.use("/api/login", loginRoutes);
 app.use("/api/consultas", consultaRoutes);
 app.use("/api/carrinho", carrinhoRoutes);
