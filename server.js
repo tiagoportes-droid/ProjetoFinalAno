@@ -9,16 +9,6 @@ import consultaRoute from "./src/server/routes/consultaRoutes.js";
 import loginRoutes from "./src/server/routes/loginRoutes.js";
 import vendaRoutes from "./src/server/routes/vendaRoutes.js";
 
-
-function formatarDataParaBD(dataStr) {
-  if (!dataStr || dataStr.trim() === "") return null;
-  if (dataStr.includes("-")) return dataStr;
-  if (dataStr.includes("/")) {
-    const [dia, mes, ano] = dataStr.split("/");
-    return `${ano}-${mes}-${dia}`;
-  }
-}
-
 const app = express();
 app.use(express.json());
 app.use(cors());
